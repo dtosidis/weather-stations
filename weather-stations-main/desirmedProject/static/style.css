@@ -1,0 +1,16 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 10px;
+}
+
+#map {
+    height: 75vh;
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+}
+
+input {
+    padding: 6px;
+    width: 300px;
+}
