@@ -1,0 +1,38 @@
+html, body {
+/*  padding: 10px;*/
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#app {
+    width: 1280px;
+    height: 832px;
+    position: relative;
+/*    margin: 0 auto;
+    overflow: hidden;   /* CRITICAL
+    background: white;*/
+}
+
+#map {
+    position: absolute;
+    top: 100px;      /* below header */
+    bottom: 40px;    /* above footer */
+    left: 0;
+    right: 0;
+    z-index: 0;
+/*  width: 100%;
+    height: 75vh;
+    margin-top: 10px;
+    border: 1px solid #ccc;*/
+}
+
+.leaflet-container {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/*input {
+    padding: 6px;
+    width: 300px;
+}*/

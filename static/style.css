@@ -1,0 +1,162 @@
+
+
+/* Reset / base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Inter, sans-serif;
+    background: white;
+}
+
+.app {
+    position: relative;
+    width: 1280px;
+    margin: 0 auto;
+}
+
+/* Header */
+.top-bar {
+    position: relative;
+    height: 100px;
+    background: #05315D;
+    color: white;
+    display: flex;
+    align-items: center;   /* ← THIS fixes the height mismatch */
+    justify-content: space-between;
+    padding: 0 24px;
+}
+
+.logo {
+    /*position: absolute;*/
+    /*left: 80px;*/
+    /*top: 20px;*/
+    display: flex;
+    align-items: center;
+    gap: 10px; /* space between icon and text */
+}
+
+.logo-main {
+    /*font-size: 32px;*/
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.logo-accent {
+    /*font-size: 32px;*/
+    font-size: 22px;
+    font-weight: 700;
+    color: #2ADFFF;
+
+    margin-left: 2px;
+}
+
+.subtitle {
+    font-size: 14px;
+    /*font-weight: 600;*/
+    margin-top: 4px;
+}
+
+/* Navigation */
+.top-nav {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Main content */
+.content {
+    position: relative;
+    /*
+    padding-top: 100px;
+    */
+}
+
+#map {
+    width: 1280px;
+    height: 692px;
+    /*
+    margin-top: 10px;
+    */
+}
+
+/* Layers */
+.layers-label {
+    position: absolute;
+    right: 40px;
+    bottom: 120px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+}
+
+/* Weather warning card */
+.weather-warning {
+    position: absolute;
+    top: 28px;
+    right: 36px;
+    width: 286px;
+    height: 56px;
+    background: white;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+}
+
+.warning-icon {
+    width: 22px;
+    height: 19px;
+    background: #E24F3B;
+}
+
+.warning-text {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Footer */
+.footer {
+    height: 40px;
+    background: #05315D;
+    color: white;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.logo-icon {
+    flex-shrink: 0;
+}
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+.logo-title {
+    display: flex;
+    align-items: baseline;
+}
