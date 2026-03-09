@@ -1,36 +1,32 @@
-const map = L.map("map",{layers: [lyr_satellite, lyr_streets]}).setView([41.1, 25.4], 7);
+const map = L.map("map").setView([20, 0], 2);
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+// Base OpenStreetMap layer
+const osmLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "&copy; OpenStreetMap contributors"
 }).addTo(map);
 
-var lyr_satellite = L.tileLayer(esri_url, {id: 'MapID', maxZoom: 20, tileSize: 512, zoomOffset: -1, attribution: esri_attribution});
-var lyr_streets   = L.tileLayer(mapbox_url, {id: 'mapbox/streets-v11', maxZoom: 28, tileSize: 512, zoomOffset: -1, attribution: mapbox_attribution});
-// var map = L.map('map', {
-//             center: [54.17747885048963, -6.337641477584839],
-//             zoom: 18,
-//             layers: [lyr_satellite, lyr_streets, lg_markers]
-//           });
+// Satellite layer (Esri World Imagery)
+const satelliteLayer = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+        attribution: "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+    }
+);
 
-var baseMaps = {
-              "Streets": lyr_streets,
-              "Satellite": lyr_satellite
-          };
-// var overlayMaps = {
-//               "Markers": lg_markers,
-//           };
-
-L.control.layers(baseMaps).addTo(map);
-    // , overlayMaps).addTo(map);
+// Optional: add layer control to switch between them
+L.control.layers({
+    "OpenStreetMap": osmLayer,
+    "Satellite": satelliteLayer
+}).addTo(map);
 
 // map.invalidateSize();
 // setTimeout(() => {
 //   map.invalidateSize();
 // }, 100);
 
-let marker = L.marker([50.4501, 30.5234],
-  {alt: 'Kyiv'}).addTo(map) // "Kyiv" is the accessible name of this marker
-  .bindPopup('Kyiv is a nice city!');//[]
+//let marker = L.marker([50.4501, 30.5234],
+//  {alt: 'Kyiv'}).addTo(map) // "Kyiv" is the accessible name of this marker
+//  .bindPopup('Kyiv is a nice city!');//[]
 
 // var popup = L.popup();
 //
@@ -43,7 +39,7 @@ let marker = L.marker([50.4501, 30.5234],
 //
 // map.on('click', onMapClick);
 
-var cloudIcon = L.icon({
+var darkIcon = L.icon({
     iconUrl: 'static\\Pin_Dark.svg',
 //    shadowUrl:'',
 
@@ -54,7 +50,63 @@ var cloudIcon = L.icon({
     popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
 });
 
-L.marker([51.5, -0.09], {icon: cloudIcon}).addTo(map);
+var offlineIcon = L.icon({
+    iconUrl: 'static\\Pin_Offline.svg',
+    iconSize:     [38, 95], // size of the icon
+    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
+
+var lightIcon = L.icon({
+    iconUrl: 'static/Pin_Light.svg',
+    iconSize: [38, 95],
+    iconAnchor: [22, 94],
+    popupAnchor: [-3, -76]
+});
+
+var currentBaseLayer = "Default";
+L.marker([51.5, -0.09], {icon: offlineIcon}).addTo(map).bindPopup(`
+    <div class="weather-popup">
+        <div class="station-label">STATION</div>
+        <div class="location-name">London, The Borough</div>
+        <div class="temp right-align">29°C</div>
+        <div class="weather-row right-align">0.1mm</div>
+        <div class="weather-row right-align">3 Bf</div>
+    </div>
+  `, {
+      className: "meteo-popup",
+      maxWidth: 220
+  });
+
+
+//console.log('a');
+//let icon = (currentBaseLayer === "Satellite") ? lightIcon : offlineIcon;
+
+
+var marker =  L.marker([50.4501, 30.5234], { icon: darkIcon })
+  .addTo(map)
+  .bindPopup(`
+    <div class="weather-popup">
+        <div class="station-label">STATION</div>
+        <div class="location-name">Kyiv</div>
+        <div class="temp right-align">29°C</div>
+        <div class="weather-row right-align">0.1mm</div>
+        <div class="weather-row right-align">3 Bf</div>
+    </div>
+  `, {
+      className: "meteo-popup",
+      maxWidth: 220
+  });
+
+map.on('baselayerchange', function (e) {
+    currentBaseLayer = e.name;
+    if (e.name === "Satellite") {
+        console.log('a');
+        marker.setIcon(lightIcon);
+    } else {
+        marker.setIcon(darkIcon);
+    }
+});
 
 function clearMarkers() {
     markers.forEach(marker => map.removeLayer(marker));

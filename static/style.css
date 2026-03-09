@@ -160,3 +160,62 @@ body {
     display: flex;
     align-items: baseline;
 }
+/*
+.meteo-popup {
+    height: 140px;
+    width: 150px;
+    font-size: 16px;
+    line-height: 0.8;
+}
+*/
+
+/* Popup background */
+.meteo-popup .leaflet-popup-content-wrapper {
+    background-color: #05315D;
+    border-radius: 10px;
+    box-shadow: none;
+}
+
+.meteo-popup .leaflet-popup-tip {
+    background-color: #05315D;
+}
+
+.meteo-popup .leaflet-popup-content {
+    margin: 12px;
+    font-family: Arial, sans-serif;
+}
+
+/* Left aligned elements */
+.station-label {
+    font-size: 11px;
+    color: #2ADFFF;
+    letter-spacing: 1px;
+    text-align: left;
+}
+
+.location-name {
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 4px 0 8px 0;
+    text-align: left;
+}
+
+/* Right aligned elements */
+.right-align {
+    text-align: right;
+}
+
+/* Temperature */
+.temp {
+    color: #2ADFFF;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* Other rows */
+.weather-row {
+    color: #2ADFFF;
+    font-size: 14px;
+    margin-top: 4px;
+}
