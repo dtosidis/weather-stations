@@ -1,136 +1,177 @@
-const map = L.map("map").setView([20, 0], 2);
+// ==================== LANGUAGE SETTINGS ====================
+const DEFAULT_LANG = 'el';
+let currentLang = localStorage.getItem('mapLang') || DEFAULT_LANG;
 
-// Base OpenStreetMap layer
+const langSelector = document.getElementById('lang-selector');
+const currentLangSpan = document.getElementById('current-lang');
+const langOptions = document.getElementById('lang-options');
+
+// Initialize dropdown display
+currentLangSpan.textContent = currentLang === 'el' ? 'ΕΛ' : 'EN';
+
+// Toggle dropdown
+langSelector.addEventListener('click', e => {
+    e.stopPropagation();
+    langOptions.style.display = langOptions.style.display === 'block' ? 'none' : 'block';
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', e => {
+    if (!langSelector.contains(e.target)) langOptions.style.display = 'none';
+});
+
+// Change language
+langOptions.querySelectorAll('li').forEach(li => {
+    li.addEventListener('click', e => {
+        currentLang = e.target.dataset.lang;
+        currentLangSpan.textContent = e.target.textContent;
+        localStorage.setItem('mapLang', currentLang);
+        updateStaticText();
+        updateMarkersLanguage();
+        langOptions.style.display = 'none';
+    });
+});
+
+// ==================== UPDATE STATIC TEXT ====================
+function updateStaticText() {
+    document.querySelectorAll('[data-lang-el]').forEach(el => {
+        el.textContent = currentLang === 'el' ? el.getAttribute('data-lang-el') : el.getAttribute('data-lang-en');
+    });
+    currentLangSpan.textContent = currentLang === 'el' ? 'ΕΛ' : 'EN';
+}
+updateStaticText();
+
+// ==================== MAP SETUP ====================
+const map = L.map("map", { center: [41.13, 24.88], zoom: 9, maxZoom: 19 });
+
+// Base layers
 const osmLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; OpenStreetMap contributors"
+    attribution: "&copy; OpenStreetMap contributors", maxZoom: 19
 }).addTo(map);
 
-// Satellite layer (Esri World Imagery)
 const satelliteLayer = L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    {
-        attribution: "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
-    }
+    { attribution: "Tiles &copy; Esri", maxZoom: 19 }
 );
 
-// Optional: add layer control to switch between them
-L.control.layers({
-    "OpenStreetMap": osmLayer,
-    "Satellite": satelliteLayer
-}).addTo(map);
+const baseMaps = { "OpenStreetMap": osmLayer, "Satellite": satelliteLayer };
+const layerControl = L.control.layers(baseMaps, null, { position: 'bottomright', collapsed: true }).addTo(map);
+let currentBaseLayer = "OpenStreetMap";
 
-// map.invalidateSize();
-// setTimeout(() => {
-//   map.invalidateSize();
-// }, 100);
+// ==================== ICONS ====================
+const darkIcon = L.icon({ iconUrl: '/static/Pin_Dark.svg', iconSize: [38,95], iconAnchor: [22,94], popupAnchor: [-3,-76] });
+const lightIcon = L.icon({ iconUrl: '/static/Pin_Light.svg', iconSize: [38,95], iconAnchor: [22,94], popupAnchor: [-3,-76] });
+const offlineIcon = L.icon({ iconUrl: '/static/Pin_Offline.svg', iconSize: [38,95], iconAnchor: [22,94], popupAnchor: [-3,-76] });
 
-//let marker = L.marker([50.4501, 30.5234],
-//  {alt: 'Kyiv'}).addTo(map) // "Kyiv" is the accessible name of this marker
-//  .bindPopup('Kyiv is a nice city!');//[]
+// ==================== MARKER CLUSTER ====================
+const markersCluster = L.markerClusterGroup();
+let stationMarkers = [];
 
-// var popup = L.popup();
-//
-// function onMapClick(e) {
-//     popup
-//         .setLatLng(e.latlng)
-//         .setContent("You clicked the map at " + e.latlng.toString())
-//         .openOn(map);
-// }
-//
-// map.on('click', onMapClick);
+// ==================== FETCH STATIONS ====================
+async function loadStations() {
+    try {
+        const response = await fetch("/api/stations");
+        if (!response.ok) throw new Error("Failed to fetch stations");
+        const stations = await response.json();
 
-var darkIcon = L.icon({
-    iconUrl: 'static\\Pin_Dark.svg',
-//    shadowUrl:'',
+        stations.forEach(station => {
+            let icon = !station.status ? offlineIcon : (currentBaseLayer === "Satellite" ? lightIcon : darkIcon);
+            const marker = L.marker([station.latitude, station.longitude], { icon });
+            marker.stationData = station;
 
-    iconSize:     [38, 95], // size of the icon
-    //    shadowSize:   [50, 64], // size of the shadow
-    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-    //    shadowAnchor: [4, 62],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-});
+            const popupContent = getPopupContent(station);
+            marker.bindPopup(popupContent, { className: "meteo-popup", maxWidth: 220 });
 
-var offlineIcon = L.icon({
-    iconUrl: 'static\\Pin_Offline.svg',
-    iconSize:     [38, 95], // size of the icon
-    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-});
+            markersCluster.addLayer(marker);
+            stationMarkers.push(marker);
+        });
 
-var lightIcon = L.icon({
-    iconUrl: 'static/Pin_Light.svg',
-    iconSize: [38, 95],
-    iconAnchor: [22, 94],
-    popupAnchor: [-3, -76]
-});
+        map.addLayer(markersCluster);
+    } catch (err) {
+        console.error("Error loading stations:", err);
+    }
+}
 
-var currentBaseLayer = "Default";
-L.marker([51.5, -0.09], {icon: offlineIcon}).addTo(map).bindPopup(`
-    <div class="weather-popup">
-        <div class="station-label">STATION</div>
-        <div class="location-name">London, The Borough</div>
-        <div class="temp right-align">29°C</div>
-        <div class="weather-row right-align">0.1mm</div>
-        <div class="weather-row right-align">3 Bf</div>
-    </div>
-  `, {
-      className: "meteo-popup",
-      maxWidth: 220
-  });
+// ==================== POPUP CONTENT ====================
+function getPopupContent(station) {
+    const name = currentLang === 'el' ? (station.name.el || station.name.en) : station.name.en;
+    const title = currentLang === 'el' ? "ΣΤΑΘΜΟΣ" : "STATION";
 
+    return `
+        <div class="weather-popup">
+            <div class="station-label">${title}</div>
+            <div class="location-name">${name}</div>
+            <div class="popup-row">
+              <span class="value">29°C</span>
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M14 14.76V5a2 2 0 10-4 0v9.76a4 4 0 104 0zM12 22a3 3 0 01-1-5.83V5a1 1 0 012 0v11.17A3 3 0 0112 22z"/>
+                </svg>
+              </span>
+            </div>
+            <div class="popup-row">
+              <span class="value">0.1mm</span>
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M12 2s6 7.03 6 11a6 6 0 11-12 0c0-3.97 6-11 6-11z"/>
+                </svg>
+              </span>
+            </div>
+            <div class="popup-row">
+              <span class="value">3 Bf</span>
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M4 8h9a3 3 0 10-3-3M2 12h13a3 3 0 113 3M3 16h7a2 2 0 110 4"/>
+                </svg>
+              </span>
+            </div>
+        </div>
+    `;
+}
 
-//console.log('a');
-//let icon = (currentBaseLayer === "Satellite") ? lightIcon : offlineIcon;
+// ==================== UPDATE MARKERS LANGUAGE ====================
+function updateMarkersLanguage() {
+    stationMarkers.forEach(marker => marker.setPopupContent(getPopupContent(marker.stationData)));
+}
 
-
-var marker =  L.marker([50.4501, 30.5234], { icon: darkIcon })
-  .addTo(map)
-  .bindPopup(`
-    <div class="weather-popup">
-        <div class="station-label">STATION</div>
-        <div class="location-name">Kyiv</div>
-        <div class="temp right-align">29°C</div>
-        <div class="weather-row right-align">0.1mm</div>
-        <div class="weather-row right-align">3 Bf</div>
-    </div>
-  `, {
-      className: "meteo-popup",
-      maxWidth: 220
-  });
-
-map.on('baselayerchange', function (e) {
+// ==================== BASE LAYER CHANGE ====================
+map.on('baselayerchange', e => {
     currentBaseLayer = e.name;
-    if (e.name === "Satellite") {
-        console.log('a');
-        marker.setIcon(lightIcon);
-    } else {
-        marker.setIcon(darkIcon);
-    }
+    markersCluster.eachLayer(marker => {
+        if (!marker.stationData.status) return;
+        marker.setIcon(currentBaseLayer === "Satellite" ? lightIcon : darkIcon);
+    });
 });
 
-function clearMarkers() {
-    markers.forEach(marker => map.removeLayer(marker));
-    markers = [];
-}
+// Load stations
+loadStations();
 
-async function search() {
-    const query = document.getElementById("search").value;
-    if (!query) return;
+const warning = document.getElementById("weatherWarning");
+const header = warning.querySelector(".warning-header");
+const dropdown = warning.querySelector(".warning-dropdown");
+const closeBtn = document.getElementById("warningClose");
 
-    clearMarkers();
+header.addEventListener("click", (e) => {
 
-    const response = await fetch(`/api/locations?q=${encodeURIComponent(query)}`);
-    const locations = await response.json();
-
-    locations.forEach(loc => {
-        const marker = L.marker([loc.lat, loc.lng])
-            .addTo(map)
-            .bindPopup(loc.name);
-
-        markers.push(marker);
-    });
-
-    if (locations.length > 0) {
-        map.setView([locations[0].lat, locations[0].lng], 12);
+    if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+    } else {
+        dropdown.style.display = "block";
     }
-}
+
+});
+
+closeBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dropdown.style.display = "none";
+});
+
+/* CLOSE WHEN CLICKING OUTSIDE */
+
+document.addEventListener("click", function(event){
+
+    if (!warning.contains(event.target)) {
+        dropdown.style.display = "none";
+    }
+
+});

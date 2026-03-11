@@ -1,5 +1,3 @@
-
-
 /* Reset / base */
 * {
     box-sizing: border-box;
@@ -25,38 +23,32 @@ body {
     background: #05315D;
     color: white;
     display: flex;
-    align-items: center;   /* ← THIS fixes the height mismatch */
+    align-items: center;
     justify-content: space-between;
     padding: 0 24px;
+    z-index: 1000;
 }
 
 .logo {
-    /*position: absolute;*/
-    /*left: 80px;*/
-    /*top: 20px;*/
     display: flex;
     align-items: center;
-    gap: 10px; /* space between icon and text */
+    gap: 10px;
 }
 
 .logo-main {
-    /*font-size: 32px;*/
     font-size: 22px;
     font-weight: 700;
 }
 
 .logo-accent {
-    /*font-size: 32px;*/
     font-size: 22px;
     font-weight: 700;
     color: #2ADFFF;
-
     margin-left: 2px;
 }
 
 .subtitle {
     font-size: 14px;
-    /*font-weight: 600;*/
     margin-top: 4px;
 }
 
@@ -79,25 +71,45 @@ body {
     font-size: 14px;
 }
 
-.icon {
-    width: 20px;
-    height: 20px;
+/* Language dropdown */
+.nav-item.lang {
+    position: relative;
+    cursor: pointer;
+}
+
+#lang-options {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #05315D;
+    color: white;
+    border-radius: 6px;
+    list-style: none;
+    padding: 6px 0;
+    min-width: 60px;
+    z-index: 99999; /* make sure this is higher than the map */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+#lang-options li {
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+#lang-options li:hover {
+    background-color: #2ADFFF;
+    color: #05315D;
 }
 
 /* Main content */
 .content {
     position: relative;
-    /*
-    padding-top: 100px;
-    */
 }
 
 #map {
     width: 1280px;
     height: 692px;
-    /*
-    margin-top: 10px;
-    */
 }
 
 /* Layers */
@@ -110,22 +122,7 @@ body {
     color: white;
 }
 
-/* Weather warning card */
-.weather-warning {
-    position: absolute;
-    top: 28px;
-    right: 36px;
-    width: 286px;
-    height: 56px;
-    background: white;
-    box-shadow: 0 4px 4px rgba(0,0,0,0.25);
-    border-radius: 10px;
 
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0 16px;
-}
 
 .warning-icon {
     width: 22px;
@@ -148,28 +145,20 @@ body {
     align-items: center;
     justify-content: center;
 }
-.logo-icon {
-    flex-shrink: 0;
-}
+
+/* Logo alignment */
 .logo-text {
     display: flex;
     flex-direction: column;
     line-height: 1.1;
 }
+
 .logo-title {
     display: flex;
     align-items: baseline;
 }
-/*
-.meteo-popup {
-    height: 140px;
-    width: 150px;
-    font-size: 16px;
-    line-height: 0.8;
-}
-*/
 
-/* Popup background */
+/* Leaflet popups */
 .meteo-popup .leaflet-popup-content-wrapper {
     background-color: #05315D;
     border-radius: 10px;
@@ -185,7 +174,7 @@ body {
     font-family: Arial, sans-serif;
 }
 
-/* Left aligned elements */
+/* Station popup text */
 .station-label {
     font-size: 11px;
     color: #2ADFFF;
@@ -201,21 +190,321 @@ body {
     text-align: left;
 }
 
-/* Right aligned elements */
 .right-align {
     text-align: right;
 }
 
-/* Temperature */
 .temp {
     color: #2ADFFF;
     font-size: 22px;
     font-weight: bold;
 }
 
-/* Other rows */
 .weather-row {
     color: #2ADFFF;
     font-size: 14px;
     margin-top: 4px;
+}
+
+/* Layer control button like Google Maps */
+.leaflet-control-layers {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Expanded menu */
+.leaflet-control-layers-expanded {
+    padding: 8px;
+}
+
+.leaflet-control-layers label {
+    display: block;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    margin-bottom: 2px;
+}
+
+.leaflet-control-layers label:hover {
+    background-color: #f0f0f0;
+}
+
+.leaflet-control-layers input {
+    display: none; /* hide checkboxes */
+}
+
+/* Adjust bottom-right spacing */
+.leaflet-bottom .leaflet-control-layers {
+    margin-bottom: 40px;
+    margin-right: 20px;
+}
+
+
+:root{
+  --popup-bg: rgba(12, 47, 77, 0.92);      /* deep blue with translucency */
+  --popup-header: #3ad1d9;                 /* aqua accent for header */
+  --popup-text: #e7f2fb;                   /* light text */
+  --popup-muted: #a9c6da;                  /* secondary text */
+  --popup-accent: #39e2ff;                 /* value color */
+  --popup-shadow: 0 8px 22px rgba(0,0,0,0.35);
+  --radius: 12px;
+
+  --ww-surface: #ffffff;
+  --ww-pill-bg: #ffffff;
+  --ww-pill-text: #163d59;       /* deep blue text/icon like your screenshot */
+  --ww-shadow: 0 8px 22px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.18);
+  --ww-radius: 14px;
+  --ww-gap: 10px;
+
+  --station-bg: #f2f8fb;         /* soft blue card */
+  --station-sep: #e4eef5;
+  --title: #0e344e;
+  --muted: #7aa0b8;
+  --accent: #27d3ff;             /* cyan values as in first screenshot */
+  --header-accent: #36cbd3;
+
+}
+
+
+/* Popup card */
+.popup{
+  position: absolute;              /* position wherever you need on your map */
+  top: 24px;                       /* demo position */
+  left: 24px;                      /* demo position */
+  background: var(--popup-bg);
+  color: var(--popup-text);
+  border-radius: var(--radius);
+  padding: 10px 12px 12px;
+  width: 200px;                    /* close to your screenshot */
+  box-shadow: var(--popup-shadow);
+  backdrop-filter: saturate(120%) blur(2px);
+  -webkit-backdrop-filter: saturate(120%) blur(2px);
+  animation: fadeIn 160ms ease-out;
+}
+
+/* Pointer */
+.popup::after{
+  content: "";
+  position: absolute;
+  left: 28px;                      /* horizontal position of the pointer */
+  bottom: -8px;                    /* pushes below the card */
+  width: 0; height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid var(--popup-bg);
+  filter: drop-shadow(0 4px 2px rgba(0,0,0,0.25));
+}
+
+/* Header tag (small caps) */
+.popup-header{
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  font-weight: 800;
+  color: var(--popup-header);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* Station title */
+.popup-title{
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.2;
+  color: var(--popup-text);
+  margin-bottom: 6px;
+}
+
+/* Each metric row */
+.popup-row{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* push content to the right */
+  gap: 8px;                  /* space between value and icon */
+  background: rgba(255,255,255,0.04); /* subtle separation like glass */
+  border-radius: 8px;
+  padding: 6px 8px;
+  margin-top: 6px;
+}
+
+/* Value styling */
+.popup-row .value{
+  color: var(--popup-accent);
+  font-weight: 700;
+  font-size: 16px;
+    order: 0;
+}
+
+/* Icon style */
+.popup-row .icon{
+  color: var(--popup-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+    order: 1;
+}
+
+.popup-row { white-space: nowrap; }
+
+/* Smooth entrance */
+@keyframes fadeIn{
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Optional: make it look good on small screens */
+@media (max-width: 400px){
+  .popup{ width: 180px; }
+}
+
+/* MAIN POPUP */
+
+.weather-warning{
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:290px;
+
+    font-family: system-ui, -apple-system, sans-serif;
+
+    background: linear-gradient(
+        180deg,
+        #f7f9fb 0%,
+        #eef2f5 100%
+    );
+
+    border-radius:14px;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.7);
+
+    border:1px solid #e3e8ee;
+
+    z-index:1000;
+}
+
+/* HEADER */
+
+.warning-header{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    padding:12px 14px;
+
+    font-weight:600;
+    font-size:15px;
+
+    color:#2b3a55;
+
+    border-bottom:1px solid #e5eaef;
+
+    cursor:pointer;
+}
+
+/* TRIANGLE ICON */
+
+.warning-icon{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: transparent;
+}
+
+/* HEADER TEXT */
+
+.warning-text{
+    flex:1;
+}
+
+/* CLOSE BUTTON */
+
+.warning-close{
+    font-size:14px;
+    color:#2b3a55;
+    cursor:pointer;
+}
+
+/* DROPDOWN */
+
+.warning-dropdown{
+    padding:10px;
+    display:none;
+}
+
+/* STATION CARD */
+
+.station-card{
+
+    background:#ffffff;
+
+    border-radius:10px;
+
+    padding:12px;
+
+    margin-bottom:10px;
+
+    box-shadow:0 3px 8px rgba(0,0,0,0.08);
+}
+
+/* LABEL */
+
+.station-label{
+
+    color:#39b8c6;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:0.6px;
+}
+
+/* STATION NAME */
+
+.station-name{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#2b2b2b;
+
+    margin-top:2px;
+}
+
+/* VALUES */
+
+.station-values{
+
+    margin-top:6px;
+
+    display:flex;
+
+    gap:14px;
+
+    font-weight:700;
+
+    color:#ff5b45;
+}
+
+/* TEMPERATURE */
+
+.temp{
+    display:flex;
+    align-items:center;
+    gap:4px;
+}
+
+/* WIND */
+
+.wind{
+    display:flex;
+    align-items:center;
+    gap:4px;
 }
