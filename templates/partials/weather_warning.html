@@ -1,0 +1,43 @@
+<div class="weather-warning" id="weatherWarning">
+    <div class="warning-header">
+        <span class="warning-icon">
+            <!--<img src="/static/icons/warning.svg" alt="Warning">-->
+            <svg viewBox="0 0 24 24" width="18" height="18">
+              <path d="M12 3L1 21h22L12 3z" fill="#1c355e"/>
+              <rect x="11" y="9" width="2" height="6" fill="white"/>
+              <rect x="11" y="16.5" width="2" height="2" fill="white"/>
+            </svg>
+        </span>
+
+        <span class="warning-text"
+              data-lang-el="Προειδοποίηση Καιρού"
+              data-lang-en="Weather Warning">
+            Προειδοποίηση Καιρού
+        </span>
+
+        <span class="warning-close" id="warningClose">✕</span>
+    </div>
+
+    <div class="warning-dropdown">
+        {% for station in stations %}
+            <div class="station-card">
+                <div class="station-label">ΣΤΑΘΜΟΣ</div>
+                <div class="station-name">{{ station.name }}</div>
+
+                <div class="station-values">
+                    {% if station.temp %}
+                        <span class="temp">
+                            {{ station.temp }}°C 🌡️ !
+                        </span>
+                    {% endif %}
+
+                    {% if station.wind %}
+                        <span class="wind">
+                            {{ station.wind }} Bf 💨 !
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

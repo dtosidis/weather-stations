@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}About - MeteoHUB{% endblock %}
+
+{% block content %}
+<div class="about-container">
+
+    <!-- LEFT: MAP / IMAGE -->
+    <div class="about-left">
+        <img src="/static/greece_map.png" alt="Map" class="about-map">
+    </div>
+
+    <!-- RIGHT: CONTENT -->
+    <div class="about-right">
+
+        <!-- HEADER -->
+        <div class="about-header">
+            <h2>
+                <span class="about-label"
+                      data-lang-el="ΣΧΕΤΙΚΑ ΜΕ ΤΟ"
+                      data-lang-en="ABOUT">
+                    ΣΧΕΤΙΚΑ ΜΕ ΤΟ
+                </span><br>
+
+                <span class="about-title">DesirMED</span>
+            </h2>
+
+            <button class="about-close" onclick="window.location.href='/'">✕</button>
+        </div>
+
+        <!-- DESCRIPTION CARD -->
+        <div class="about-card">
+            <img src="/static/desirmed_logo.png" class="about-logo">
+
+            <p
+              data-lang-el="Το πρόγραμμα DesirMED στοχεύει στην ενίσχυση της ανθεκτικότητας των περιοχών της Μεσογείου μέσω καινοτόμων λύσεων..."
+              data-lang-en="The DesirMED program aims to strengthen the resilience of Mediterranean regions through innovative solutions...">
+                Το πρόγραμμα DesirMED στοχεύει στην ενίσχυση της ανθεκτικότητας...
+            </p>
+        </div>
+
+        <!-- SECTION TITLE -->
+        <h3 class="about-section-title"
+            data-lang-el="Ο ρόλος της ΠΑΜΘ"
+            data-lang-en="The role of PAMTH">
+            Ο ρόλος της ΠΑΜΘ
+        </h3>
+
+        <!-- ROLE CARD -->
+        <div class="about-card">
+            <img src="/static/pamth_logo.png" class="about-logo">
+
+            <p
+              data-lang-el="Η Περιφέρεια Ανατολικής Μακεδονίας και Θράκης (ΠΑΜΘ) συμμετέχει ενεργά..."
+              data-lang-en="The Region of Eastern Macedonia and Thrace (PAMTH) actively participates...">
+                Η Περιφέρεια Ανατολικής Μακεδονίας και Θράκης...
+            </p>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="about-footer">
+            <img src="/static/eu_flag.png" class="eu-flag">
+
+            <p
+              data-lang-el="Χρηματοδοτείται από την Ευρωπαϊκή Ένωση..."
+              data-lang-en="Funded by the European Union...">
+                Χρηματοδοτείται από την Ευρωπαϊκή Ένωση...
+            </p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

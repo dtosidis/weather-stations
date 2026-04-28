@@ -18,11 +18,29 @@ app.include_router(router)
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
+    stations = [
+        {"name": "Κοκκινοχώρι", "temp": 31, "wind": None},
+        {"name": "Χρυσοχώρι", "temp": 32, "wind": 5},
+    ]
     return templates.TemplateResponse(
         "index.html",
-        {"request": request}
+        {"request": request, "stations": stations}
     )
 
+@app.get("/about")
+def about_page(request: Request):
+    return templates.TemplateResponse("about.html", {"request": request, "active": "about"})
+
+
+@app.get("/station/{station_id}")
+async def station_page(request: Request, station_id: int):
+    stations = get_all_stations()
+    station = next((s for s in stations if s["id"] == station_id), None)
+
+    return templates.TemplateResponse("station.html", {
+        "request": request,
+        "station": station
+    })
 
 @app.get("/api/stations")
 async def get_stations(stations=Depends(call_external_api)):

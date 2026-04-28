@@ -80,7 +80,43 @@ async function loadStations() {
             marker.stationData = station;
 
             const popupContent = getPopupContent(station);
-            marker.bindPopup(popupContent, { className: "meteo-popup", maxWidth: 220 });
+            marker.bindPopup(getPopupContent(station), {
+                className: "meteo-popup",
+                maxWidth: 220,
+                closeButton: false,
+                autoClose: false,
+                closeOnClick: false
+            });
+
+            let hoverTimeout;
+
+            marker.on('mouseover', function () {
+                hoverTimeout = setTimeout(() => this.openPopup(), 100);
+            });
+
+            marker.on('mouseout', function () {
+                clearTimeout(hoverTimeout);
+                this.closePopup();
+            });
+
+            marker.on('popupopen', function () {
+                const popupEl = this.getPopup().getElement();
+
+                popupEl.addEventListener('mouseenter', () => {
+                    this._popup._isHovered = true;
+                });
+
+                popupEl.addEventListener('mouseleave', () => {
+                    this._popup._isHovered = false;
+                    this.closePopup();
+                });
+            });
+
+            marker.on('click', function () {
+
+                // Example route (adjust to your backend)
+                window.location.href = `/station/${station.station_id}`;
+            });
 
             markersCluster.addLayer(marker);
             stationMarkers.push(marker);

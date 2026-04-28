@@ -1,0 +1,49 @@
+<!-- Header -->
+<header class="top-bar">
+    <div class="logo">
+        <svg class="logo-icon">
+            <use href="/static/icons/sprite.svg#logo"></use>
+        </svg>
+        <div class="logo-text">
+            <div class="logo-title">
+                <span class="logo-main">Meteo</span><span class="logo-accent">HUB</span>
+            </div>
+            <div class="subtitle">PAMTH Weather Database</div>
+        </div>
+    </div>
+
+    <nav class="top-nav">
+        <a href="/about" class="nav-item" data-lang-key="about">
+            <svg class="icon">
+                <use href="/static/icons/sprite.svg#icon-info"></use>
+            </svg>
+            <span class="lang-text" data-lang-el="Σχετικά" data-lang-en="About">Σχετικά</span>
+        </a>
+        <a href="https://envrio.org/global_stations_api/docs#/" class="nav-item" target="_blank"
+           rel="noopener noreferrer">
+            <svg class="icon">
+                <use href="/static/icons/sprite.svg#icon-interface"></use>
+            </svg>
+            <span class="lang-text"
+                  data-lang-el="Διεπαφή"
+                  data-lang-en="Interface">
+        Διεπαφή
+    </span>
+        </a>
+        <div class="nav-item lang" id="lang-selector">
+            <svg class="icon">
+                <use href="/static/icons/sprite.svg#lang-selector"></use>
+            </svg>
+            <span id="current-lang">ΕΛ</span>
+            <svg class="down-icon">
+                <use href="/static/icons/sprite.svg#down-arrow"></use>
+            </svg>
+
+            <!-- Dropdown menu -->
+            <ul id="lang-options">
+                <li data-lang="el">ΕΛ</li>
+                <li data-lang="en">EN</li>
+            </ul>
+        </div>
+    </nav>
+</header>

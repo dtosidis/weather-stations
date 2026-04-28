@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}MeteoHUB{% endblock %}</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+<div class="app">
+
+    {% include "partials/header.html" %}
+
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include "partials/footer.html" %}
+
+</div>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

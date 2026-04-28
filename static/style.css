@@ -8,12 +8,24 @@
 body {
     font-family: Inter, sans-serif;
     background: white;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
 }
 
 .app {
-    position: relative;
-    width: 1280px;
-    margin: 0 auto;
+    /*position: relative;*/
+    /*width: 100%;*/
+    /*min-height: 100vh;*/
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 /* Header */
@@ -69,6 +81,9 @@ body {
     gap: 8px;
     font-weight: 600;
     font-size: 14px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
 }
 
 /* Language dropdown */
@@ -104,12 +119,16 @@ body {
 
 /* Main content */
 .content {
-    position: relative;
+    /*position: relative;*/
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 #map {
-    width: 1280px;
-    height: 692px;
+    flex: 1;
+    width: 100%;
+    height: 100%;
 }
 
 /* Layers */
@@ -144,6 +163,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
 }
 
 /* Logo alignment */
@@ -360,11 +380,16 @@ body {
   .popup{ width: 180px; }
 }
 
+.map-container {
+    position: relative;
+    flex: 1;          /* IMPORTANT */
+    display: flex;
+}
 /* MAIN POPUP */
 
 .weather-warning{
     position:absolute;
-    top:20px;
+    top:40px;
     right:20px;
     width:290px;
 
@@ -507,4 +532,143 @@ body {
     display:flex;
     align-items:center;
     gap:4px;
+}
+
+#interfaceBtn {
+    cursor: pointer;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    fill: None;
+    flex-shrink: 0;
+}
+
+.down-icon {
+    width: 10px;
+    height: 6px;
+    fill: None;
+    flex-shrink: 0;
+}
+
+.logo-icon {
+    width: 30px;
+    height: 40px;
+    fill: None;
+    flex-shrink: 0;
+}
+
+/* Layout */
+.about-container {
+    display: flex;
+    flex: 1;
+    background: #f5f7fa;
+}
+
+/* LEFT SIDE */
+.about-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-map {
+    max-width: 80%;
+    height: auto;
+}
+
+/* RIGHT SIDE */
+.about-right {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+/* Header */
+.about-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.about-label {
+    font-size: 12px;
+    color: #6b7a90;
+}
+
+.about-title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #1c355e;
+}
+
+/* Close button */
+.about-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Cards */
+.about-card {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 15px;
+
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+/* Logos */
+.about-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+/* Section title */
+.about-section-title {
+    margin-top: 25px;
+    color: #1c355e;
+}
+
+/* Footer */
+.about-footer {
+    margin-top: 30px;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    font-size: 12px;
+    display: flex;
+    gap: 10px;
+}
+
+.eu-flag {
+    width: 40px;
+}
+
+/* ========================= */
+/* ✅ RESPONSIVE ADDITION */
+/* ========================= */
+@media (max-width: 900px) {
+    .about-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .about-left {
+        height: 200px;
+    }
+
+    .about-map {
+        max-width: 60%;
+    }
+
+    .about-right {
+        padding: 20px;
+    }
 }
